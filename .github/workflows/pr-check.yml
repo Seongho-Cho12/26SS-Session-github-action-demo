@@ -1,0 +1,38 @@
+# ============================================================
+# PR 체크 워크플로우
+#
+# 목적: Pull Request가 열리면 자동으로
+#       - PR 제목 & 내용 형식 검사
+#       - 변경된 파일 목록 출력
+#       - 자동으로 리뷰어 지정 (선택)
+# ============================================================
+
+name: PR 자동 검사
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]  # PR 열기/수정/커밋 추가 시
+
+jobs:
+  pr-lint:
+    name: PR 형식 검사
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: PR 제목 확인
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          echo "PR 제목: $PR_TITLE"
+
+          # PR 제목이 너무 짧으면 경고
+          if [ ${#PR_TITLE} -lt 10 ]; then
+            echo "⚠️  PR 제목이 너무 짧습니다. 더 자세히 작성해 주세요."
+            exit 1
+          fi
+
+          echo "✅ PR 제목 형식 OK"
+
+      - name: 변경 파일 목록 출력
+        run: |
+          echo "📝 이 PR에서 변경된 파일들:"
+          echo "${{ toJSON(github.event.pull_request.changed_files) }} 개 파일 변경됨"
