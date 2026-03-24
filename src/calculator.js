@@ -7,7 +7,7 @@ function add(a, b) {
   if (typeof a !== 'number' || typeof b !== 'number') {
     throw new TypeError('입력값은 숫자여야 합니다.');
   }
-  return a + b;
+  return a - b;
 }
 
 function subtract(a, b) {
